@@ -21,13 +21,11 @@ export class Ranger {
      */
     attackNearestEnemy() {
         var enemy = findClosestByPath(this.creep, this.world.enemyCreeps);
+        console.log(enemy);
         if (enemy) {                                        // 当敌人存在时，优先攻击敌人
-            if (enemy.body.some(i => i.type == ATTACK)) {
-                this.sneakyAttack(enemy);
-            } else {
-                this.creep.rangedAttack(enemy);
-            }
+            this.sneakyAttack(enemy);
         } else {
+            console.log("目标为敌方基地");
             this.attackEnemySpawn();                             // 当敌人不存在时，攻击敌方基地
         }
     }
@@ -49,7 +47,7 @@ export class Ranger {
         } else if(distance > 2) {               // 距离刚好
             this.creep.rangedAttack(enemy);
         } else {                                // 距离过近，开始撤退
-            if (this.creep.move(turnDiret(getDirection(enemy.x - this.creep.x, enemy.y - this.creep.y))) != OK) {
+            if (this.creep.move(turnDiretion(getDirection(enemy.x - this.creep.x, enemy.y - this.creep.y))) != OK) {
                 this.creep.rangedAttack(enemy);
             }
         }
