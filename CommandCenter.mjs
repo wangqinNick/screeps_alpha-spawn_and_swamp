@@ -31,6 +31,7 @@ export class CommandCenter {
      */
     allowGroupAttack() {
         if (AT_WAR || this.myRangers.length >= GROUP_ATTACK_SIZE) {
+            AT_WAR = true;
             return true;
         } else {
             return false;
