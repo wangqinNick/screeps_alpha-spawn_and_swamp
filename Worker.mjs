@@ -14,6 +14,10 @@ export class Worker extends SmartCreep {
         super(creep, world);
     }
 
+    act(){
+        this.smartTransfer();
+    }
+
     /**
      * Harvests the source
      */

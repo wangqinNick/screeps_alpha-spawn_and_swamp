@@ -10,6 +10,25 @@ export class SmartCreep {
         this.world = world;
     }
 
+    /**
+     * Act
+     * @param {}  
+     */
+    act(){
+
+    }
+
+    /**
+     * Follow a target creep.
+     * @param {the target creep to follow} leader 
+     */
+    follow(leader) {
+        this.creep.moveTo(leader);
+    }
+    
+    /**
+     * Move randomly
+     */
     randomMove() {
         let i = Math.floor(Math.random() * 8);
         this.creep.move(DIRECTIONS[i]);

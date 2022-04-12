@@ -38,20 +38,16 @@ export function loop() {
 
     mySmartSpawn.createCreeps();                            // 开始征兵
     
-    if (myWorkers) {
-        for (var myWorker of myWorkers) {
-            var mySmartWorker = new Worker(myWorker, world);
-            mySmartWorker.smartTransfer();
+    
+    for (var myWorker of myWorkers) {
+        new Worker(myWorker, world).act();
+    }
+    
+    for (var myRanger of myRangers) {
+        if (commandCenter.allowGroupAttack()) {
+            // console.log("开始集团攻击...");
+            new Ranger(myRanger, world).act();
         }
     }
-
-    if (myRangers) {
-        for (var myRanger of myRangers) {
-            var mySmartRanger = new Ranger(myRanger, world);
-            if (commandCenter.allowGroupAttack()) {
-                // console.log("开始集团攻击...");
-                mySmartRanger.attackNearestEnemyAttacker();
-            }
-        }
-    }
+    
 }

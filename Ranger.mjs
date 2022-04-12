@@ -16,6 +16,14 @@ export class Ranger extends SmartCreep{
         super(creep, world);
     }
 
+
+    /**
+     * 
+     */
+    act(){
+        this.attackNearestEnemyAttacker();
+    }
+
     /**
      * Attack the nearest enemy
      */
