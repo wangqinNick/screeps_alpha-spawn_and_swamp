@@ -4,6 +4,7 @@ import { WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, 
 import { SmartSpawn } from "./SmartSpawn.mjs";
 import { World } from "./World.mjs";
 import { Worker } from "./Worker.mjs";
+import { Ranger } from "./Ranger.mjs";
 
 const WORK_LIMIT = 5;
 
@@ -16,7 +17,8 @@ export function loop() {
     var myCreeps = getObjectsByPrototype(Creep).filter(object => object.my);
     var enemyCreeps = getObjectsByPrototype(Creep).filter(object => !object.my);
 
-    var myWorkers = myCreeps.filter(creep => creep.body.some(i => i.type == WORK))
+    var myWorkers = myCreeps.filter(creep => creep.body.some(i => i.type == WORK));
+    var myRangers = myCreeps.filter(creep => creep.body.some(i => i.type == RANGED_ATTACK));
 
     // 资源
     var containers = getObjectsByPrototype(StructureContainer); //TODO: filter out empty containers
@@ -28,18 +30,24 @@ export function loop() {
     // 后期刷新的，中立资源点
     var neutralContainers = containers.filter(container => (getRange(container, mySpawn) > 10) && (getRange(container, enemySpawn) > 10));
 
-
+    // Todo: 将传递给World的参数更加具体化
     var world = new World(mySpawn, enemySpawn, myCreeps, enemyCreeps, myContainers, enemyContainers, neutralContainers);
 
     // 创建智能母巢
     var mySmartSpawn = new SmartSpawn(world);
-    mySmartSpawn.createWorker();
-    // console.log(world.myContainers[0]);
+    mySmartSpawn.createCreeps();
     
     if (myWorkers) {
         for (var myWorker of myWorkers) {
             var mySmartWorker = new Worker(myWorker, world);
             mySmartWorker.smartTransfer();
+        }
+    }
+
+    if (myRangers) {
+        for (var myRanger of myRangers) {
+            var mySmartRanger = new Ranger(myRanger, world);
+            mySmartRanger.attackNearestEnemy();
         }
     }
 }
