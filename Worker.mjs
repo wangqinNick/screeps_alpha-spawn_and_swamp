@@ -1,6 +1,7 @@
+import { SmartCreep } from "./SmartCreep.mjs";
 import { RESOURCE_ENERGY, ERR_NOT_IN_RANGE } from "/game/constants";
 
-export class Worker {
+export class Worker extends SmartCreep {
     /**
      * Creates a new smart worker creep
      * 
@@ -10,8 +11,7 @@ export class Worker {
      */
 
     constructor(creep, world) {
-        this.creep = creep;
-        this.world = world;
+        super(creep, world);
     }
 
     /**

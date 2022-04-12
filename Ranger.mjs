@@ -1,9 +1,10 @@
 import { getObjectsByPrototype, findClosestByRange, findClosestByPath, getTicks, getRange, getDirection } from '/game/utils';
 import { Creep, StructureSpawn, Source, Resource, StructureTower, StructureContainer } from '/game/prototypes';
 import { WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, BOTTOM, LEFT, RIGHT, TOP_RIGHT, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, OK } from '/game/constants';
+import { SmartCreep } from './SmartCreep.mjs';
 
 
-export class Ranger {
+export class Ranger extends SmartCreep{
     /**
      * Creates a new smart ranger creep
      * 
@@ -12,8 +13,7 @@ export class Ranger {
      */
 
     constructor(creep, world) {
-        this.creep = creep;
-        this.world = world;
+        super(creep, world);
     }
 
     /**
@@ -48,7 +48,7 @@ export class Ranger {
             this.creep.rangedAttack(enemy);
         } else {                                // 距离过近，开始撤退
             if (this.creep.move(turnDiretion(getDirection(enemy.x - this.creep.x, enemy.y - this.creep.y))) != OK) {
-                this.creep.rangedAttack(enemy);
+                this.creep.randomMove();        // 随机逃跑
             }
         }
     }
