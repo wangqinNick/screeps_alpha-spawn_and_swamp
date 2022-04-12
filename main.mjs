@@ -2,6 +2,7 @@ import { getObjectsByPrototype, findClosestByRange, findClosestByPath, getTicks,
 import { Creep, StructureSpawn, Source, Resource, StructureTower, StructureContainer } from '/game/prototypes';
 import { WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, BOTTOM, LEFT, RIGHT, TOP_RIGHT, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, OK } from '/game/constants';
 import { SmartSpawn } from "./SmartSpawn.mjs";
+import { World } from "./World.mjs";
 
 export function loop() {
     // variables
@@ -27,8 +28,10 @@ export function loop() {
     var neutralContainers = containers.filter(container => (getRange(container, mySpawn) > 10) && (getRange(container, enemySpawn) > 10));
 
 
+    var world = new World(mySpawn, enemySpawn, myCreeps, enemyCreeps, myContainers, enemyContainers, neutralContainers);
+
     // 创建智能母巢
-    var mySmartSpawn = new SmartSpawn(mySpawn, myCreeps, enemyCreeps, containers);
+    var mySmartSpawn = new SmartSpawn(world);
     console.log(mySmartSpawn.spawn)
 
 }

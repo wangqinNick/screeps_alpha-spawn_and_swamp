@@ -4,20 +4,16 @@ import { MOVE, WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE,
 
 const WORKER_BODY = [WORK, MOVE];
 export class SmartSpawn {
+
     /**
      * Creates a new SmartSpawn on the top of the spawn
      * 
-     * @param spawn     My spawn
-     * @param myCreeps    My creeps list.
-     * @param enemyCreeps Enemy's creeps list.
-     * @param containers The containers' list
+     * @param world     The word information
      */
 
-     constructor(spawn, myCreeps, enemyCreeps, containers) {
-        this.spawn = spawn;
-        this.myCreeps = myCreeps;
-        this.enemyCreeps = enemyCreeps;
-        this.containers = containers;
+     constructor(world) {
+        this.world = world;
+        this.spawn = world.mySpawn;
     }
 
     /**
