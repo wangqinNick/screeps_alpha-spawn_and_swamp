@@ -50,7 +50,7 @@ export function loop() {
             var mySmartRanger = new Ranger(myRanger, world);
             if (commandCenter.allowGroupAttack()) {
                 // console.log("开始集团攻击...");
-                mySmartRanger.attackNearestEnemy();
+                mySmartRanger.attackNearestEnemyAttacker();
             }
         }
     }
