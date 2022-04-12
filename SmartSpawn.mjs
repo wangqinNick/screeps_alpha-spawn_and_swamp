@@ -5,7 +5,7 @@ import { TOUGH, MOVE, CARRY, WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL
 const WORKER_BODY = [WORK, CARRY, CARRY, CARRY, MOVE];
 const RANGER_BODY = [TOUGH, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE];
 const WORKER_LIMIT = 3;
-const RANGER_LIMIT = 5;
+const RANGER_LIMIT = 50;
 var ALLOW_CREATE_WORKER = false;
 var ALLOW_CREATE_RANGER = false;
 export class SmartSpawn {
@@ -26,20 +26,16 @@ export class SmartSpawn {
         let myRangerCount = this.world.myCreeps.filter(creep => creep.body.some(i => i.type == RANGED_ATTACK)).length;
 
         if (myWorkerCount < WORKER_LIMIT) {
-            ALLOW_CREATE_WORKER = true;
-            ALLOW_CREATE_RANGER = false;
-        } else {
-            ALLOW_CREATE_WORKER = true;
-            ALLOW_CREATE_RANGER = true;
-        }
-
-        if (ALLOW_CREATE_WORKER == true) {
             this.createWorker();
+            return;
+        } 
+
+        if (myRangerCount < RANGER_LIMIT) {
+            this.createRanger();
+            return;
         }
 
-        if (ALLOW_CREATE_RANGER == true) {
-            this.createRanger();
-        }
+        this.createRanger();
     }
 
     /**

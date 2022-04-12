@@ -31,7 +31,9 @@ export class Ranger extends SmartCreep{
         var enemyAttackers = this.world.enemyCreeps.filter(creep => creep.body.some(i => i.type == RANGED_ATTACK || i.type == ATTACK))
         var enemy = findClosestByPath(this.creep, enemyAttackers);
         // console.log(enemy);
-        if (enemy) {                                        // 当敌人存在时，优先攻击敌人
+        let isSpawning = false;
+        if (enemy) {isSpawning = (enemy.x == this.world.enemySpawn.x && enemy.y == this.world.enemySpawn.y);}
+        if (enemy && !isSpawning) {                                        // 当敌人存在时，优先攻击敌人
             this.sneakyAttack(enemy);
         } else {
             console.log("目标为敌方基地");
