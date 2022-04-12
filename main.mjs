@@ -1,12 +1,11 @@
 import { getObjectsByPrototype, findClosestByRange, findClosestByPath, getTicks, getRange, getDirection } from '/game/utils';
 import { Creep, StructureSpawn, Source, Resource, StructureTower, StructureContainer } from '/game/prototypes';
-import { WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, BOTTOM, LEFT, RIGHT, TOP_RIGHT, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, OK } from '/game/constants';
+import { RESOURCE_ENERGY, WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, BOTTOM, LEFT, RIGHT, TOP_RIGHT, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, OK } from '/game/constants';
 import { SmartSpawn } from "./SmartSpawn.mjs";
 import { World } from "./World.mjs";
 import { Worker } from "./Worker.mjs";
 import { Ranger } from "./Ranger.mjs";
-
-const WORK_LIMIT = 5;
+import { CommandCenter } from './CommandCenter.mjs';
 
 export function loop() {
     // variables
@@ -21,7 +20,7 @@ export function loop() {
     var myRangers = myCreeps.filter(creep => creep.body.some(i => i.type == RANGED_ATTACK));
 
     // 资源
-    var containers = getObjectsByPrototype(StructureContainer); //TODO: filter out empty containers
+    var containers = getObjectsByPrototype(StructureContainer).filter(container => container.store[RESOURCE_ENERGY] > 0); //TODO: filter out empty containers
 
     // 我方资源点
     var myContainers = containers.filter(container => getRange(container, mySpawn) < 10);
@@ -35,7 +34,9 @@ export function loop() {
 
     // 创建智能母巢
     var mySmartSpawn = new SmartSpawn(world);
-    mySmartSpawn.createCreeps();
+    var commandCenter = new CommandCenter(world);
+
+    mySmartSpawn.createCreeps();                            // 开始征兵
     
     if (myWorkers) {
         for (var myWorker of myWorkers) {
@@ -47,7 +48,10 @@ export function loop() {
     if (myRangers) {
         for (var myRanger of myRangers) {
             var mySmartRanger = new Ranger(myRanger, world);
-            mySmartRanger.attackNearestEnemy();
+            if (commandCenter.allowGroupAttack()) {
+                // console.log("开始集团攻击...");
+                mySmartRanger.attackNearestEnemy();
+            }
         }
     }
 }
