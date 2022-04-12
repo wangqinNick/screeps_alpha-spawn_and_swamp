@@ -3,6 +3,9 @@ import { Creep, StructureSpawn, Source, Resource, StructureTower, StructureConta
 import { WORK, ERR_NOT_IN_RANGE, ATTACK, RANGED_ATTACK, HEAL, TOWER_RANGE, TOP, BOTTOM, LEFT, RIGHT, TOP_RIGHT, TOP_LEFT, BOTTOM_LEFT, BOTTOM_RIGHT, OK } from '/game/constants';
 import { SmartSpawn } from "./SmartSpawn.mjs";
 import { World } from "./World.mjs";
+import { Worker } from "./Worker.mjs";
+
+const WORK_LIMIT = 5;
 
 export function loop() {
     // variables
@@ -13,12 +16,10 @@ export function loop() {
     var myCreeps = getObjectsByPrototype(Creep).filter(object => object.my);
     var enemyCreeps = getObjectsByPrototype(Creep).filter(object => !object.my);
 
-    // var myWorkers = myCreeps.filter(creep => creep.body.some(i => i.type == WORK))
-    // console.log(myWorkers);
-
+    var myWorkers = myCreeps.filter(creep => creep.body.some(i => i.type == WORK))
 
     // 资源
-    var containers = getObjectsByPrototype(StructureContainer);
+    var containers = getObjectsByPrototype(StructureContainer); //TODO: filter out empty containers
 
     // 我方资源点
     var myContainers = containers.filter(container => getRange(container, mySpawn) < 10);
@@ -32,21 +33,13 @@ export function loop() {
 
     // 创建智能母巢
     var mySmartSpawn = new SmartSpawn(world);
-    console.log(mySmartSpawn.spawn)
-
-}
-
-
-/*
-    if(creep.store.getFreeCapacity(constants.RESOURCE_ENERGY)) {
-        if(creep.harvest(source) == constants.ERR_NOT_IN_RANGE) {
-            creep.moveTo(source);
-        }
-    } else {
-        if(creep.transfer(spawn, constants.RESOURCE_ENERGY) == constants.ERR_NOT_IN_RANGE) {
-            creep.moveTo(spawn);
+    mySmartSpawn.createWorker();
+    // console.log(world.myContainers[0]);
+    
+    if (myWorkers) {
+        for (var myWorker of myWorkers) {
+            var mySmartWorker = new Worker(myWorker, world);
+            mySmartWorker.smartTransfer();
         }
     }
-
-*/
-
+}
