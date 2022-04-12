@@ -6,6 +6,8 @@ const WORKER_BODY = [WORK, CARRY, MOVE];
 const RANGER_BODY = [RANGED_ATTACK, CARRY, MOVE];
 const WORKER_LIMIT = 5;
 const RANGER_LIMIT = 5;
+var ALLOW_CREATE_WORKER = false;
+var ALLOW_CREATE_RANGER = false;
 export class SmartSpawn {
 
     /**
@@ -17,6 +19,27 @@ export class SmartSpawn {
      constructor(world) {
         this.world = world;
         this.spawn = world.mySpawn;
+    }
+
+    createCreeps() {
+        let myWorkerCount = this.world.myCreeps.filter(creep => creep.body.some(i => i.type == WORK)).length;
+        let myRangerCount = this.world.myCreeps.filter(creep => creep.body.some(i => i.type == RANGED_ATTACK)).length;
+
+        if (myWorkerCount <= 3) {
+            ALLOW_CREATE_WORKER = true;
+            ALLOW_CREATE_RANGER = false;
+        } else {
+            ALLOW_CREATE_WORKER = true;
+            ALLOW_CREATE_RANGER = true;
+        }
+
+        if (ALLOW_CREATE_WORKER == true) {
+            this.createWorker();
+        }
+
+        if (ALLOW_CREATE_RANGER == true) {
+            this.createRanger();
+        }
     }
 
     /**
@@ -32,7 +55,9 @@ export class SmartSpawn {
      * Creates a new Attacker creep
      */
     createAttacker() {
-
+        for (let i = this.world.myCreeps.filter(creep => creep.body.some(i => i.type == ATTACK)).length; i < RANGER_LIMIT; i++) {
+            this.spawn.spawnCreep(RANGER_BODY).object;
+        }
     } 
 
     /**
